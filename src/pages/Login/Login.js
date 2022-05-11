@@ -1,18 +1,30 @@
 import React from 'react';
-import { useSignInWithGoogle } from 'react-firebase-hooks/auth';
+import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import { useForm } from 'react-hook-form';
+import { Link } from 'react-router-dom'
 import auth from '../../firebase.init';
+import Loading from '../Shared/Loading';
 
 const Login = () => {
 
     const { register, handleSubmit, formState: { errors }, } = useForm();
+    const [signInWithGoogle, guser, gloading, gerror] = useSignInWithGoogle(auth);
+    const [signInWithEmailAndPassword, user, loading, error, ] = useSignInWithEmailAndPassword(auth);
+
+    let loginErrorMessage;
+
+    if(loading || gloading){
+        return <Loading />
+    }
+
+    if(error || gerror){
+        loginErrorMessage = <p className='text-red-500 text-center mt-4'>{error?.message || gerror?.message}</p>
+    }
 
     const onLoginSubmit = (data) => {
         console.log(data);
+        signInWithEmailAndPassword(data.email, data.password);
     }
-
-
-    const [signInWithGoogle, user, loading, error] = useSignInWithGoogle(auth);
 
     const handleGoogleLogin = () => {
         signInWithGoogle();
@@ -64,8 +76,12 @@ const Login = () => {
                         {errors.password?.type === 'minLength' && <p className='text-error mt-1 text-center'>{errors.password.message}</p>}
                         {errors.password?.type === 'pattern' && <p className='text-error mt-1 text-center'>{errors.password.message}</p>}
 
+                        {loginErrorMessage}
+
                         <input type="submit" className='mt-5 w-full btn btn-outline' value='Login' />
                     </form>
+
+                    <p className='text-center'><small>New to Doctors Portal <Link to='/register' className='text-secondary'>Create new account</Link></small></p>
 
                     <div className="divider">OR</div>
 
