@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import auth from '../../firebase.init';
 import Loading from '../Shared/Loading';
 
@@ -12,6 +12,9 @@ const Login = () => {
     const [signInWithEmailAndPassword, user, loading, error, ] = useSignInWithEmailAndPassword(auth);
 
     let loginErrorMessage;
+    const navigate = useNavigate();
+    const location = useLocation();
+    let from = location.state?.from?.pathname || "/";
 
     if(loading || gloading){
         return <Loading />
@@ -21,9 +24,12 @@ const Login = () => {
         loginErrorMessage = <p className='text-red-500 text-center mt-4'>{error?.message || gerror?.message}</p>
     }
 
-    const onLoginSubmit = (data) => {
-        console.log(data);
-        signInWithEmailAndPassword(data.email, data.password);
+    if(user || guser){
+        navigate(from, { replace: true });
+    }
+
+    const onLoginSubmit = ({ email, password}) => {
+        signInWithEmailAndPassword(email, password);
     }
 
     const handleGoogleLogin = () => {
@@ -38,11 +44,11 @@ const Login = () => {
 
                     <form onSubmit={handleSubmit(onLoginSubmit)} className="my-5">
 
-                        <div class="form-control w-full max-w-xs">
-                            <label class="label">
-                                <span class="label-text">Email</span>
+                        <div className="form-control w-full max-w-xs">
+                            <label className="label">
+                                <span className="label-text">Email</span>
                             </label>
-                            <input type="email" placeholder="Your Email Here" class="input input-bordered w-full max-w-xs" {...register('email', { required: {
+                            <input type="email" placeholder="Your Email Here" className="input input-bordered w-full max-w-xs" {...register('email', { required: {
                                     value: true,
                                     message: 'Email is required.'
                                 }, 
@@ -55,11 +61,11 @@ const Login = () => {
                         {errors.email?.type === 'required' && <p className='text-error mt-1 text-center'>{errors.email.message}</p>}
                         {errors.email?.type === 'pattern' && <p className='text-error mt-1 text-center'>{errors.email.message}</p>}
 
-                        <div class="form-control w-full max-w-xs">
-                            <label class="label">
-                                <span class="label-text">Password</span>
+                        <div className="form-control w-full max-w-xs">
+                            <label className="label">
+                                <span className="label-text">Password</span>
                             </label>
-                            <input type="password" placeholder="Your Password Here" class="input input-bordered w-full max-w-xs" {...register('password', { required: {
+                            <input type="password" placeholder="Your Password Here" className="input input-bordered w-full max-w-xs" {...register('password', { required: {
                                     value: true,
                                     message: 'Password is required.'
                                 }, minLength: {

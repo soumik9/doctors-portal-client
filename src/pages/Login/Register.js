@@ -1,7 +1,7 @@
 import React from 'react';
 import { useCreateUserWithEmailAndPassword, useSignInWithGoogle, useUpdateProfile } from 'react-firebase-hooks/auth';
 import { useForm } from 'react-hook-form';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import auth from '../../firebase.init';
 import Loading from '../Shared/Loading';
 
@@ -14,6 +14,8 @@ const Register = () => {
 
     let loginErrorMessage;
     const navigate = useNavigate();
+    const location = useLocation();
+    let from = location.state?.form?.pathname || "/";
 
     if(loading || updating || gloading){
         return <Loading />
@@ -21,6 +23,10 @@ const Register = () => {
 
     if(error || uerror || gerror){
         loginErrorMessage = <p className='text-red-500 text-center mt-4'>{error?.message || uerror?.message || gerror?.message}</p>
+    }
+
+    if(user || guser){
+        navigate(from, { replace: true });
     }
 
     const onRegisterSubmit = async ({ name, email, password }) => {
@@ -41,11 +47,11 @@ const Register = () => {
 
                     <form onSubmit={handleSubmit(onRegisterSubmit)} className="my-5">
 
-                        <div class="form-control w-full max-w-xs">
-                            <label class="label">
-                                <span class="label-text">Name</span>
+                        <div className="form-control w-full max-w-xs">
+                            <label className="label">
+                                <span className="label-text">Name</span>
                             </label>
-                            <input type="text" placeholder="Your Name Here" class="input input-bordered w-full max-w-xs" {...register('name', {
+                            <input type="text" placeholder="Your Name Here" className="input input-bordered w-full max-w-xs" {...register('name', {
                                 required: {
                                     value: true,
                                     message: 'Name is required.'
@@ -54,11 +60,11 @@ const Register = () => {
                         </div>
                         {errors.name?.type === 'required' && <p className='text-error mt-1 text-center'>{errors.name.message}</p>}
 
-                        <div class="form-control w-full max-w-xs">
-                            <label class="label">
-                                <span class="label-text">Email</span>
+                        <div className="form-control w-full max-w-xs">
+                            <label className="label">
+                                <span className="label-text">Email</span>
                             </label>
-                            <input type="email" placeholder="Your Email Here" class="input input-bordered w-full max-w-xs" {...register('email', {
+                            <input type="email" placeholder="Your Email Here" className="input input-bordered w-full max-w-xs" {...register('email', {
                                 required: {
                                     value: true,
                                     message: 'Email is required.'
@@ -72,11 +78,11 @@ const Register = () => {
                         {errors.email?.type === 'required' && <p className='text-error mt-1 text-center'>{errors.email.message}</p>}
                         {errors.email?.type === 'pattern' && <p className='text-error mt-1 text-center'>{errors.email.message}</p>}
 
-                        <div class="form-control w-full max-w-xs">
-                            <label class="label">
-                                <span class="label-text">Password</span>
+                        <div className="form-control w-full max-w-xs">
+                            <label className="label">
+                                <span className="label-text">Password</span>
                             </label>
-                            <input type="password" placeholder="Your Password Here" class="input input-bordered w-full max-w-xs" {...register('password', {
+                            <input type="password" placeholder="Your Password Here" className="input input-bordered w-full max-w-xs" {...register('password', {
                                 required: {
                                     value: true,
                                     message: 'Password is required.'
