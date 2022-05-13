@@ -3,6 +3,9 @@ import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import About from './pages/About/About';
 import Appointment from './pages/Appointment/Appointment';
+import Dashboard from './pages/Dashboard/Dashboard';
+import MyAppointments from './pages/Dashboard/MyAppointments';
+import MyReview from './pages/Dashboard/MyReview';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Register from './pages/Login/Register';
@@ -22,10 +25,19 @@ function App() {
         <Route path="/" element={<Home />} />
 
         <Route path="/appointment" element={
-            <RequiredAuth>
-              <Appointment />
-            </RequiredAuth>
+            <RequiredAuth> <Appointment /> </RequiredAuth>
         } />
+
+        {/* dashboard routes */}
+        <Route path="/dashboard" element={
+          <RequiredAuth> <Dashboard /> </RequiredAuth>
+         }> 
+
+          <Route index element={<MyAppointments />}></Route>
+          <Route path='review' element={<MyReview />}></Route>
+
+        </Route>
+        {/* dashboard routes */}
         
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />

@@ -1,20 +1,21 @@
 import { format } from 'date-fns';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { useQuery } from 'react-query'
 import BookingModal from './BookingModal';
 import Service from './Service';
+import Loading from '../Shared/Loading'
 
 const AvailableAppointments = ({ date }) => {
     
-    const [services, setServices] = useState([]);
     const [treatment, setTreatment] = useState(null);
     const formattedDate = format(date, 'PP');
 
-    useEffect( () => {
-        // fetch('https://doctors-portal-server9.herokuapp.com/services')
+    const { data: services, isLoading, refetch } = useQuery(['available', formattedDate], () => 
         fetch(`https://doctors-portal-server9.herokuapp.com/available?date=${formattedDate}`)
         .then(res => res.json())
-        .then(data => setServices(data));
-    }, [formattedDate])
+    )
+
+    if(isLoading) return <Loading />
 
     return (
         <section className='my-20'>
@@ -35,6 +36,7 @@ const AvailableAppointments = ({ date }) => {
                     treatment={treatment} 
                     setTreatment={setTreatment} 
                     date={date} 
+                    refetch={refetch} 
                 />
             }
         </section>
