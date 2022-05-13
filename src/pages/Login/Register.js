@@ -8,7 +8,7 @@ import Loading from '../Shared/Loading';
 const Register = () => {
 
     const { register, handleSubmit, formState: { errors }, } = useForm();
-    const [createUserWithEmailAndPassword, user, loading, error,] = useCreateUserWithEmailAndPassword(auth);
+    const [createUserWithEmailAndPassword, user, loading, error,] = useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true});
     const [updateProfile, updating, uerror] = useUpdateProfile(auth);
     const [signInWithGoogle, guser, gloading, gerror] = useSignInWithGoogle(auth);
 
