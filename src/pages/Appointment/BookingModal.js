@@ -2,14 +2,44 @@ import React from 'react';
 import { format } from 'date-fns';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import auth from '../../firebase.init';
+import toast from 'react-hot-toast';
 
-const BookingModal = ({ treatment, date }) => {
+const BookingModal = ({ treatment, setTreatment, date }) => {
 
-    const { name, slots } = treatment;
+    const { _id, name, slots } = treatment;
     const [user] = useAuthState(auth);
+
+    const formattedDate = format(date, 'PP');
 
     const handleBooking = event => {
         event.preventDefault();
+        
+        const slot = event.target.slot.value;
+
+        const booking = {
+            treatmentId: _id,
+            treatment: name,
+            date: formattedDate,
+            slot,
+            patient: user.displayName,
+            patientEmail: user.email,
+            mobile: event.target.mobile.value
+        }
+
+        fetch('https://doctors-portal-server9.herokuapp.com/booking', {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json'
+            },
+            body: JSON.stringify(booking)
+        })
+        .then(res => res.json())
+        .then(data => {
+            toast.success('Successfully booked!', { duration: 2000, position: 'top-right' });
+            setTreatment(null);
+        })
+
+        
     }
 
     return (

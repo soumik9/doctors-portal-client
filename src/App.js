@@ -1,3 +1,4 @@
+import { Toaster } from 'react-hot-toast';
 import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import About from './pages/About/About';
@@ -15,6 +16,7 @@ function App() {
     <div className="max-w-7xl mx-auto">
 
       <Navbar />
+      <Toaster />
 
       <Routes>
         <Route path="/" element={<Home />} />

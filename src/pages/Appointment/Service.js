@@ -2,7 +2,7 @@ import React from 'react';
 
 const Service = ({ service, setTreatment }) => {
 
-    const { name, slots } = service;
+    const { _id, name, slots } = service;
 
     return (
         <div className="card lg:max-w-lg bg-base-100 shadow-xl">
@@ -21,7 +21,7 @@ const Service = ({ service, setTreatment }) => {
                         className="btn btn-secondary text-white uppercase"
                         disabled={slots.length === 0}
                         onClick={() => setTreatment(service)}
-                    >open modal</label>
+                    >Booking</label>
                 </div>
             </div>
         </div>

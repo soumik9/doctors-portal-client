@@ -9,7 +9,7 @@ const AvailableAppointments = ({ date }) => {
     const [treatment, setTreatment] = useState(null);
 
     useEffect( () => {
-        fetch('services.json')
+        fetch('https://doctors-portal-server9.herokuapp.com/services')
         .then(res => res.json())
         .then(data => setServices(data));
     }, [])
