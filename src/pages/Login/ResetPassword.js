@@ -1,23 +1,24 @@
 import React from 'react';
-import { useSignInWithEmailAndPassword, useSignInWithGoogle } from 'react-firebase-hooks/auth';
+import { useSendPasswordResetEmail, useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import { useForm } from 'react-hook-form';
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { Toaster } from 'react-hot-toast';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import toast, { Toaster } from 'react-hot-toast';
 import auth from '../../firebase.init';
 import Loading from '../Shared/Loading';
 
-const Login = () => {
+const ResetPassword = () => {
 
-    const { register, handleSubmit, formState: { errors }, } = useForm();
+    
+    const { register, handleSubmit, formState: { errors }, reset } = useForm();
     const [signInWithGoogle, guser, gloading, gerror] = useSignInWithGoogle(auth);
-    const [signInWithEmailAndPassword, user, loading, error, ] = useSignInWithEmailAndPassword(auth);
+    const [sendPasswordResetEmail, sending, error] = useSendPasswordResetEmail(auth);
 
     let loginErrorMessage;
     const navigate = useNavigate();
     const location = useLocation();
     let from = location.state?.from?.pathname || "/";
 
-    if(loading || gloading){
+    if(sending || gloading){
         return <Loading />
     }
 
@@ -25,17 +26,20 @@ const Login = () => {
         loginErrorMessage = <p className='text-red-500 text-center mt-4'>{error?.message || gerror?.message}</p>
     }
 
-    if(user || guser){
+    if(guser){
         navigate(from, { replace: true });
     }
 
-    const onLoginSubmit = ({ email, password}) => {
-        signInWithEmailAndPassword(email, password);
+    const onResetSubmit = async ({ email}) => {
+        await sendPasswordResetEmail(email);
+        reset();
+        toast.success('Successfully send reset email!', { duration: 2000, position: 'top-right' });
     }
 
     const handleGoogleLogin = () => {
         signInWithGoogle();
     }
+
 
     return (
         <div className='flex justify-center items-center h-screen'>
@@ -44,9 +48,9 @@ const Login = () => {
                 <Toaster />
 
                 <div className="card-body">
-                    <h2 className="text-center text-2xl font-bold">Login</h2>
+                    <h2 className="text-center text-2xl font-bold">Reset Password</h2>
 
-                    <form onSubmit={handleSubmit(onLoginSubmit)} className="my-5">
+                    <form onSubmit={handleSubmit(onResetSubmit)} className="my-5">
 
                         <div className="form-control w-full max-w-xs">
                             <label className="label">
@@ -65,34 +69,14 @@ const Login = () => {
                         {errors.email?.type === 'required' && <p className='text-error mt-1 text-center'>{errors.email.message}</p>}
                         {errors.email?.type === 'pattern' && <p className='text-error mt-1 text-center'>{errors.email.message}</p>}
 
-                        <div className="form-control w-full max-w-xs">
-                            <label className="label">
-                                <span className="label-text">Password</span>
-                            </label>
-                            <input type="password" placeholder="Your Password Here" className="input input-bordered w-full max-w-xs" {...register('password', { required: {
-                                    value: true,
-                                    message: 'Password is required.'
-                                }, minLength: {
-                                    value: 6, 
-                                    message: 'Must be 6 characters or longer.'
-                                }, 
-                                pattern: {
-                                    value: /[A-Z]/, 
-                                    message: 'Uppercase 1 letter need.'
-                                }
-                            })} />
-                        </div>
-                        {errors.password?.type === 'required' && <p className='text-error mt-1 text-center'>{errors.password.message}</p>}
-                        {errors.password?.type === 'minLength' && <p className='text-error mt-1 text-center'>{errors.password.message}</p>}
-                        {errors.password?.type === 'pattern' && <p className='text-error mt-1 text-center'>{errors.password.message}</p>}
 
                         {loginErrorMessage}
 
-                        <input type="submit" className='mt-5 w-full btn btn-outline' value='Login' />
+                        <input type="submit" className='mt-5 w-full btn btn-outline' value='Reset' />
                     </form>
 
                     <p className='text-center'><small>New to Doctors Portal <Link to='/register' className='text-secondary'>Create new account</Link></small></p>
-                    <p className='text-center'><small>Forget Password <Link to='/reset' className='text-secondary'>Reset here</Link></small></p>
+                    <p className='text-center'><small>Already have account <Link to='/login' className='text-secondary'>Login here</Link></small></p>
 
                     <div className="divider">OR</div>
 
@@ -105,4 +89,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default ResetPassword;

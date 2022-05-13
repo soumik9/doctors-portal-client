@@ -5,6 +5,7 @@ import Appointment from './pages/Appointment/Appointment';
 import Home from './pages/Home/Home';
 import Login from './pages/Login/Login';
 import Register from './pages/Login/Register';
+import ResetPassword from './pages/Login/ResetPassword';
 import Footer from './pages/Shared/Footer';
 import Navbar from './pages/Shared/Navbar';
 import RequiredAuth from './pages/Shared/RequiredAuth';
@@ -27,6 +28,7 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/reset" element={<ResetPassword />} />
       </Routes>
 
       <Footer />
