@@ -7,12 +7,14 @@ const AvailableAppointments = ({ date }) => {
     
     const [services, setServices] = useState([]);
     const [treatment, setTreatment] = useState(null);
+    const formattedDate = format(date, 'PP');
 
     useEffect( () => {
-        fetch('https://doctors-portal-server9.herokuapp.com/services')
+        // fetch('https://doctors-portal-server9.herokuapp.com/services')
+        fetch(`https://doctors-portal-server9.herokuapp.com/available?date=${formattedDate}`)
         .then(res => res.json())
         .then(data => setServices(data));
-    }, [])
+    }, [formattedDate])
 
     return (
         <section className='my-20'>
