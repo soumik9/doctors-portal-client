@@ -14,6 +14,7 @@ import Register from './pages/Login/Register';
 import ResetPassword from './pages/Login/ResetPassword';
 import Footer from './pages/Shared/Footer';
 import Navbar from './pages/Shared/Navbar';
+import RequiredAdmin from './pages/Shared/RequireAdmin';
 import RequiredAuth from './pages/Shared/RequiredAuth';
 
 function App() {
@@ -38,7 +39,10 @@ function App() {
           <Route index element={<MyAppointments />}></Route>
           <Route path='review' element={<MyReview />}></Route>
           <Route path='history' element={<MyHistory />}></Route>
-          <Route path='users' element={<Users />}></Route>
+          
+          <Route path='users' element={<RequiredAdmin>
+            <Users />
+          </RequiredAdmin>}></Route>
 
         </Route>
         {/* dashboard routes */}
