@@ -1,12 +1,19 @@
 import React from 'react';
 import { useQuery } from 'react-query';
 import Loading from '../Shared/Loading';
+import UserRow from './UserRow';
 
 const Users = () => {
 
-    const { data: users, isLoading } = useQuery('users', () => fetch('https://doctors-portal-server9.herokuapp.com/users').then(res => res.json()));
+    const { data: users, isLoading, refetch } = useQuery('users', () => fetch('https://doctors-portal-server9.herokuapp.com/users', {
+        method: 'GET',
+        headers: {
+            authorization: `Bearer ${localStorage.getItem('accessToken')}`
+        }
+    }).then(res => res.json()));
 
     if (isLoading) return <Loading />
+
 
     return (
         <div>
@@ -19,14 +26,18 @@ const Users = () => {
                                 <tr>
                                     <th>Serial</th>
                                     <th>Email</th>
+                                    <th>Action</th>
+                                    <th>Remove</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
-                                    users.map((user, index) => <tr key={user._id}>
-                                        <th>{index + 1}</th>
-                                        <td>{user.email}</td>
-                                    </tr>)
+                                    users.map((user, index) => <UserRow
+                                        key={index}
+                                        index={index}
+                                        user={user}
+                                        refetch={refetch}
+                                    />)
                                 }
 
                             </tbody>
