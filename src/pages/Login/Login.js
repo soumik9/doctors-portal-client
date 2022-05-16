@@ -25,10 +25,12 @@ const Login = () => {
         }
     }, [token, navigate, from])
 
+    // if data loading 
     if(loading || gloading){
         return <Loading />
     }
 
+    // error checking
     if(error || gerror){
         loginErrorMessage = <p className='text-red-500 text-center mt-4'>{error?.message || gerror?.message}</p>
     }
