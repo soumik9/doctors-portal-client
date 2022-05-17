@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import About from './pages/About/About';
 import Appointment from './pages/Appointment/Appointment';
+import AddDoctor from './pages/Dashboard/AddDoctor';
 import Dashboard from './pages/Dashboard/Dashboard';
 import MyAppointments from './pages/Dashboard/MyAppointments';
 import MyHistory from './pages/Dashboard/MyHistory';
@@ -42,6 +43,10 @@ function App() {
           
           <Route path='users' element={<RequiredAdmin>
             <Users />
+          </RequiredAdmin>}></Route>
+
+          <Route path='add-doctor' element={<RequiredAdmin>
+            <AddDoctor />
           </RequiredAdmin>}></Route>
 
         </Route>
