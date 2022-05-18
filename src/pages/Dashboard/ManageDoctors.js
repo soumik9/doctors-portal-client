@@ -5,7 +5,7 @@ import DoctorRow from './DoctorRow';
 
 const ManageDoctors = () => {
     
-    const { data: doctors, isLoading } = useQuery('doctors', () => fetch('https://doctors-portal-server9.herokuapp.com/doctor', {
+    const { data: doctors, isLoading, refetch } = useQuery('doctors', () => fetch('https://doctors-portal-server9.herokuapp.com/doctor', {
         method: 'GET',
         headers: {
             authorization: `Bearer ${localStorage.getItem('accessToken')}`
@@ -13,7 +13,6 @@ const ManageDoctors = () => {
     }).then(res => res.json()));
 
     if (isLoading) return <Loading />
-
 
     return (
         <div>
@@ -37,6 +36,7 @@ const ManageDoctors = () => {
                                     key={doctor._id}
                                     index={index}
                                     doctor={doctor}
+                                    refetch={refetch}
                                 />)
                             }
 
