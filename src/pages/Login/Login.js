@@ -15,7 +15,7 @@ const Login = () => {
     const [token] = useToken(user || guser);
 
     let loginErrorMessage;
-    const navigate = useNavigate();
+    const navigate = useNavigate(); 
     const location = useLocation();
     let from = location.state?.from?.pathname || "/";
 
