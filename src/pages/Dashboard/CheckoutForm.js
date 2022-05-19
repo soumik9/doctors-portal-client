@@ -8,11 +8,12 @@ const CheckoutForm = ({appointment}) => {
     const elements = useElements();
     const [cardError, setCardError] = useState('');
     const [success, setSuccess] = useState('');
+    const [loading, setLoading] = useState(false);
     const [transactionId, setTransactionId] = useState('');
 
     const [clientSecret, setClientSecret] = useState('');
 
-    const {price, patient, patientEmail} = appointment
+    const {_id, price, patient, patientEmail} = appointment
 
     useEffect( () => {
         fetch('https://doctors-portal-server9.herokuapp.com/create-payment-intent',{
@@ -47,6 +48,7 @@ const CheckoutForm = ({appointment}) => {
 
         setCardError(error?.message || '');
         setSuccess('');
+        setLoading(true);
 
         // confirm payment
         const {paymentIntent, error: intentError} = await stripe.confirmCardPayment(
@@ -64,12 +66,33 @@ const CheckoutForm = ({appointment}) => {
 
           if(intentError){
               setSuccess('');
+              setLoading(false);
               setCardError(intentError?.message)
           }else{
               console.log(paymentIntent);
               setTransactionId(paymentIntent.id);
               setSuccess('Payment Completed!');
               toast.success('Payment Completed!', { duration: 2000, position: 'top-right' });
+
+              //store payment info /update backend
+              const payment = {
+                appointment: _id,
+                transactionId: paymentIntent.id
+              }
+
+              fetch(`https://doctors-portal-server9.herokuapp.com/booking/${_id}`, {
+                  method: 'PATCH',
+                  headers: {
+                    'content-type': 'application/json',
+                    'authorization': `Bearer ${localStorage.getItem('accessToken')}`
+                },
+                body: JSON.stringify(payment)
+              })
+              .then(res => res.json())
+              .then(data => {
+                    setLoading(false);
+                    console.log(data);
+              })
           }
     }
 
